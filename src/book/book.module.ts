@@ -1,11 +1,12 @@
 import { Module } from '@nestjs/common';
+import { BookController } from './book.controller';
 
 @Module({
   imports: [],
-  controllers: [],
+  controllers: [BookController],
   providers: [],
 })
-export class OrderModule {
+export class bookModule {
   constructor() {
     console.log('orders');
   }
