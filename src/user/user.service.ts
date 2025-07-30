@@ -1,10 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
-import { Constants } from 'src/utils/constraist';
 
 @Injectable()
 export class UserService {
@@ -23,18 +21,14 @@ export class UserService {
   }
 
   findAll() {
-    return `This action returns all user`;
+    return this.usersRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
-  }
-
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  findUserByEmail(email: string) {
+    return this.usersRepository.findOneOrFail({ where: { email: email } });
   }
 
   remove(id: number) {
-    return `This action removes a #${id} user`;
+    return this.usersRepository.delete(id);
   }
 }
