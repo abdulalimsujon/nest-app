@@ -2,6 +2,8 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user/user.module';
 import { User } from './user/entities/user.entity';
+import { TodoModule } from './todo/todo.module';
+import { Todo } from './todo/entities/todo.entity';
 
 @Module({
   imports: [
@@ -12,13 +14,13 @@ import { User } from './user/entities/user.entity';
       username: 'postgres',
       password: 'lifeless123',
       database: 'todo_db',
-      synchronize: true,
       logging: true,
       autoLoadEntities: true,
-      entities: [User],
-      // entities: [__dirname + '/**/*.entity{.ts,.js}'],
+      entities: [User, Todo],
+      synchronize: true,
     }),
     UserModule,
+    TodoModule,
   ],
   controllers: [],
   providers: [],
