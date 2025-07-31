@@ -29,7 +29,7 @@ export class UserService {
   }
 
   findUserByEmail(email: string) {
-    return this.usersRepository.findOneOrFail({ where: { email: email } });
+    return this.usersRepository.findOne({ where: { email: email } });
   }
 
   remove(id: number) {
