@@ -16,13 +16,16 @@ export class TodoController {
   constructor(private readonly todoService: TodoService) {}
 
   @Post()
-  create(@Body() createTodoDto: CreateTodoDto) {
-    return this.todoService.create(createTodoDto);
+  create(
+    @Body() createTodoDto: CreateTodoDto,
+    @Param('userId') userId: number,
+  ) {
+    return this.todoService.create(createTodoDto, userId);
   }
 
-  @Get()
-  findAll() {
-    return this.todoService.findAll();
+  @Get(':id')
+  findAll(@Param('id') id: number) {
+    return this.todoService.findAlltodoByUser(id);
   }
 
   @Get(':id')

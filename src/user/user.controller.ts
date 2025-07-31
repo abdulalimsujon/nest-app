@@ -18,6 +18,10 @@ export class UserController {
   create(@Body(ValidationPipe) createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);
   }
+  @Get(':id')
+  getUserById(@Param('id') id: number) {
+    return this.userService.getUserById(id);
+  }
 
   @Get()
   findAll() {

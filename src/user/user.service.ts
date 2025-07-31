@@ -20,6 +20,10 @@ export class UserService {
     return this.usersRepository.save(user);
   }
 
+  getUserById(id: number) {
+    return this.usersRepository.findOneOrFail({ where: { id: id } });
+  }
+
   findAll() {
     return this.usersRepository.find();
   }

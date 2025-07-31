@@ -4,19 +4,30 @@ import { UpdateTodoDto } from './dto/update-todo.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Todo } from './entities/todo.entity';
 import { Repository } from 'typeorm';
+import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class TodoService {
   constructor(
     @InjectRepository(Todo)
-    private usersRepository: Repository<Todo>,
+    private todosRepository: Repository<Todo>,
+    private userService: UserService,
   ) {}
-  create(createTodoDto: CreateTodoDto) {
-    return 'This action adds a new todo';
+  async create(createTodoDto: CreateTodoDto, userId: number) {
+    const todo: Todo = new Todo();
+    todo.title = createTodoDto.title;
+    todo.date = new Date().toLocaleString();
+    todo.isCompleted = false;
+    todo.user = await this.userService.getUserById(userId);
+
+    return this.todosRepository.save(todo);
   }
 
-  findAll() {
-    return `This action returns all todo`;
+  findAlltodoByUser(userId: number) {
+    return this.todosRepository.find({
+      relations: ['user'],
+      where: { user: { id: userId }, isCompleted: false },
+    });
   }
 
   findOne(id: number) {

@@ -14,7 +14,8 @@ export class Todo {
 
   @Column()
   isCompleted: boolean;
-
+  @Column()
+  date: string;
   @ManyToOne(() => User, (user) => user.todo)
   user: User;
 }
