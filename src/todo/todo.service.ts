@@ -14,12 +14,13 @@ export class TodoService {
     private userService: UserService,
   ) {}
   async create(createTodoDto: CreateTodoDto, userId: number) {
+    console.log('------------------------', createTodoDto);
     const todo: Todo = new Todo();
     todo.title = createTodoDto.title;
     todo.date = new Date().toLocaleString();
     todo.isCompleted = false;
     todo.user = await this.userService.getUserById(userId);
-
+    console.log('todo is here ', todo);
     return this.todosRepository.save(todo);
   }
 

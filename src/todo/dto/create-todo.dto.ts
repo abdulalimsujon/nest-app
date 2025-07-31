@@ -1,12 +1,20 @@
-import { IsString, IsBoolean } from 'class-validator';
+import { User } from 'src/user/entities/user.entity';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
+@Entity()
 export class CreateTodoDto {
-  @IsString()
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column()
   title: string;
 
-  @IsString()
-  name: string;
-
-  @IsBoolean()
+  @Column()
   isCompleted: boolean;
+
+  @Column()
+  date: string;
+
+  @ManyToOne(() => User, (user) => user.todo)
+  user: User;
 }

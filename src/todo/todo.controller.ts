@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  ValidationPipe,
 } from '@nestjs/common';
 import { TodoService } from './todo.service';
 import { CreateTodoDto } from './dto/create-todo.dto';
@@ -15,9 +16,10 @@ import { UpdateTodoDto } from './dto/update-todo.dto';
 export class TodoController {
   constructor(private readonly todoService: TodoService) {}
 
-  @Post()
+  // todo.controller.ts
+  @Post(':userId')
   create(
-    @Body() createTodoDto: CreateTodoDto,
+    @Body(ValidationPipe) createTodoDto: CreateTodoDto,
     @Param('userId') userId: number,
   ) {
     return this.todoService.create(createTodoDto, userId);

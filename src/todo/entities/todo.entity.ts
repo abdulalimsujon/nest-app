@@ -10,9 +10,6 @@ export class Todo {
   title: string;
 
   @Column()
-  name: string;
-
-  @Column()
   isCompleted: boolean;
   @Column()
   date: string;
