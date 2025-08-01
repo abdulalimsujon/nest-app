@@ -6,9 +6,11 @@ import {
   Param,
   Delete,
   ValidationPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
+import { RoleGuard } from 'src/auth/guard/role.guard';
 
 @Controller('user')
 export class UserController {
@@ -24,6 +26,7 @@ export class UserController {
   }
 
   @Get()
+  @UseGuards(new RoleGuard('admin'))
   findAll() {
     return this.userService.findAll();
   }
