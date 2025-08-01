@@ -20,6 +20,7 @@ import { AuthModule } from './auth/auth.module';
       entities: [User, Todo],
       synchronize: true,
     }),
+
     UserModule,
     TodoModule,
     AuthModule,
