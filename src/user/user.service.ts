@@ -10,18 +10,21 @@ export class UserService {
     @InjectRepository(User)
     private usersRepository: Repository<User>,
   ) {}
-  create(createUserDto: CreateUserDto) {
-    const user: User = new User();
-    user.email = createUserDto.email;
+
+  create(createUserDto: CreateUserDto, profileImageUrl?: string) {
+    const user = new User();
     user.firstName = createUserDto.firstName;
     user.lastName = createUserDto.lastName;
+    user.email = createUserDto.email;
     user.password = createUserDto.password;
     user.role = 'admin';
+    user.profileImage = profileImageUrl ?? null;
+
     return this.usersRepository.save(user);
   }
 
   getUserById(id: number) {
-    return this.usersRepository.findOneOrFail({ where: { id: id } });
+    return this.usersRepository.findOneOrFail({ where: { id } });
   }
 
   findAll() {
@@ -29,7 +32,7 @@ export class UserService {
   }
 
   findUserByEmail(email: string) {
-    return this.usersRepository.findOne({ where: { email: email } });
+    return this.usersRepository.findOne({ where: { email } });
   }
 
   remove(id: number) {

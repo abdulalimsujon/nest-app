@@ -1,39 +1,88 @@
 import {
   Controller,
-  Get,
   Post,
   Body,
+  Get,
   Param,
   Delete,
-  ValidationPipe,
   UseGuards,
+  UseInterceptors,
+  UploadedFile,
+  ValidationPipe,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { RoleGuard } from 'src/auth/guard/role.guard';
-import { ApiSecurity, ApiTags } from '@nestjs/swagger';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { v4 as uuid } from 'uuid';
+import * as path from 'path';
+import * as fs from 'fs';
 
-@Controller('user')
+import { ApiTags, ApiConsumes, ApiBody, ApiSecurity } from '@nestjs/swagger';
+import cloudinary from 'src/cloudinary.config';
+
 @ApiTags('User')
+@Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post('/signup')
-  create(@Body(ValidationPipe) createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto);
+  @UseInterceptors(
+    FileInterceptor('profileImage', {
+      storage: diskStorage({
+        destination: './uploads',
+        filename: (req, file, cb) => {
+          const uniqueSuffix = `${uuid()}${path.extname(file.originalname)}`;
+          cb(null, uniqueSuffix);
+        },
+      }),
+    }),
+  )
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        firstName: { type: 'string' },
+        lastName: { type: 'string' },
+        email: { type: 'string' },
+        password: { type: 'string' },
+        profileImage: { type: 'string', format: 'binary' },
+      },
+    },
+  })
+  async create(
+    @Body(ValidationPipe) createUserDto: CreateUserDto,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    let imageUrl: string | null = null;
+
+    if (file) {
+      const uploadResult = await cloudinary.uploader.upload(file.path, {
+        folder: 'users',
+      });
+      imageUrl = uploadResult.secure_url;
+      fs.unlinkSync(file.path);
+    }
+
+    return this.userService.create(createUserDto, imageUrl as string);
   }
+
   @Get(':id')
   getUserById(@Param('id') id: number) {
     return this.userService.getUserById(id);
   }
+
   @ApiSecurity('JWT-auth')
   @Get()
   @UseGuards(new RoleGuard('admin'))
   findAll() {
     return this.userService.findAll();
   }
+
   @ApiSecurity('JWT-auth')
-  @Get(':email')
+  @Get('email/:email')
   findByEmail(@Param('email') email: string) {
     return this.userService.findUserByEmail(email);
   }
