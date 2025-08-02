@@ -7,17 +7,23 @@ import {
   Param,
   Delete,
   ValidationPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { TodoService } from './todo.service';
 import { CreateTodoDto } from './dto/create-todo.dto';
 import { UpdateTodoDto } from './dto/update-todo.dto';
+import { ApiSecurity, ApiTags } from '@nestjs/swagger';
+import { RoleGuard } from 'src/auth/guard/role.guard';
 
 @Controller('todo')
+@ApiTags('Todo')
 export class TodoController {
   constructor(private readonly todoService: TodoService) {}
 
   // todo.controller.ts
+  @ApiSecurity('JWT-auth')
   @Post(':userId')
+  @UseGuards(new RoleGuard('user'))
   create(
     @Body(ValidationPipe) createTodoDto: CreateTodoDto,
     @Param('userId') userId: number,

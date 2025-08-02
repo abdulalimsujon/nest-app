@@ -11,8 +11,10 @@ import {
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { RoleGuard } from 'src/auth/guard/role.guard';
+import { ApiSecurity, ApiTags } from '@nestjs/swagger';
 
 @Controller('user')
+@ApiTags('User')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
@@ -24,12 +26,13 @@ export class UserController {
   getUserById(@Param('id') id: number) {
     return this.userService.getUserById(id);
   }
-
+  @ApiSecurity('JWT-auth')
   @Get()
   @UseGuards(new RoleGuard('admin'))
   findAll() {
     return this.userService.findAll();
   }
+  @ApiSecurity('JWT-auth')
   @Get(':email')
   findByEmail(@Param('email') email: string) {
     return this.userService.findUserByEmail(email);
