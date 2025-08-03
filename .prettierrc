@@ -1,0 +1,7 @@
+{
+  "singleQuote": true,
+  "endOfLine": "lf",
+  "trailingComma": "all",
+  "files.eol": "\n",
+  "editor.formatOnSave": true
+}
